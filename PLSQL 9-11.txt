@@ -1,0 +1,295 @@
+create table "tiempo" 
+(
+
+ "idtiempo" number NOT NULL  ,
+ "fecha"  date NOT NULL,
+ "dia" date NOT NULL,
+ "mes" date NOT NULL,
+ "año" date NOT NULL,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idtiempo)
+);
+
+----------------------------------------------------------------------------------------------------------
+
+create table "Estado" 
+(
+
+ "idEstado" number NOT NULL,
+ "descripcion" VARCHAR(2) NOT NULL,
+  CONSTRAINT estado_pk PRIMARY KEY (idEstado)
+);
+
+create or replace procedure carga_Estado()
+is
+
+
+cursor cur_loc 
+is
+select ETU_nombre nom
+from Estatus_ETU;
+
+cont number : =0;
+var1 Estado%type;
+
+begin 
+
+     open cur_loc;  
+   
+    loop
+
+	fetch cur_loc into var1
+       
+      	insert into Estado
+      	values  (cont,var1.nom);
+
+     	cont=cont+1;
+  
+    	 exit when cur_loc%notfound;
+
+    end loop;
+close cur_loc;
+
+----------------------------------------------------------------------------------------------------------
+create table "Edificio" 
+(
+
+ "idEdificio" number NOT NULL,
+ "Nombre" VARCHAR(20) NOT NULL,
+  CONSTRAINT Edificio_pk PRIMARY KEY (idEdificio)
+);
+
+create or replace procedure carga_Edificio()
+is
+
+
+cursor cur_loc 
+is
+select EDO_nombre nom
+from Edificios_EDO;
+
+cont number : =0;
+var1 Edificios_EDO.EDO_nombre%type;
+
+begin 
+
+     open cur_loc;  
+   
+    loop
+
+	fetch cur_loc into var1
+       
+      	insert into localidad
+      	values  (cont,var1.nom);
+
+     	cont=cont+1;
+  
+    	 exit when cur_loc%notfound;
+
+    end loop;
+close cur_loc;
+
+
+----------------------------------------------------------------------------------------------------------
+
+
+create table "Tipo" 
+(
+
+ "idTipo" number NOT NULL,
+ "Descripcion" VARCHAR(20) NOT NULL,
+  CONSTRAINT Tipo_pk PRIMARY KEY (idTipo)
+);
+
+
+create or replace procedure carga_Tipo()
+is
+
+cursor cur_loc 
+is
+select tso_nombre descripcion
+from sds_tipo_servicio_tso;
+
+cont number : =0;
+var1 sds_tipo_servicio_tso.tso_nombre%type;
+
+begin 
+
+     open cur_loc;  
+   
+    loop
+
+	fetch cur_loc into var1
+       
+      	insert into localidad
+      	values  (cont,var1.nom);
+
+     	cont=cont+1;
+  
+    	 exit when cur_loc%notfound;
+
+    end loop;
+close cur_loc;
+
+----------------------------------------------------------------------------------------------------------
+
+
+create table "fallas" 
+(
+
+ "idlocalidad"  number NOT NULL ,
+ "idtiempo"     number NOT NULL,
+ "idservicios"  number NOT NULL,
+
+  tiempo_entre_fallas date,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idlocalidad ,idtiempo,idservicios)
+  
+  CONSTRAINT fk_servicios
+    FOREIGN KEY (idservicios)
+    REFERENCES servicios(idservicios),
+CONSTRAINT fk_localidad
+    FOREIGN KEY (idlocalidad)
+    REFERENCES localidad (idlocalidad),
+CONSTRAINT fk_tiempo
+    FOREIGN KEY (idtiempo)
+    REFERENCES tiempo(idtiempo)
+
+);
+
+-----------------------------------------------------------------------------------------------------------
+
+
+create table "Frecuencia" 
+(
+
+ "idEdificio" number NOT NULL,
+ "idTipo" number NOT NULL,
+ "cantidad" number NOT NULL,
+
+  CONSTRAINT Frecuencia_pk PRIMARY KEY (idEdificio ,idTipo),
+  
+  CONSTRAINT fk_Edificio
+    FOREIGN KEY (idEdificio)
+    REFERENCES Edificio(idEdificio),
+  CONSTRAINT fk_Tipo
+    FOREIGN KEY (idTipo)
+    REFERENCES Tipo (idTipo)
+);
+
+
+create table "localidad" 
+(
+
+ "idlocalidad number NOT NULL,
+ "nombre" VARCHAR(2) NOT NULL,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idlocalidad)
+);
+
+------------------------------------------------------------------------------------------------------------
+create table "Centro_costos" 
+(
+
+ "idCentro" number NOT NULL,
+ "nombre" VARCHAR(10) NOT NULL,
+  CONSTRAINT centro_costos_pk PRIMARY KEY (idCentro)
+);
+
+
+
+create or replace procedure carga_centro_costos()
+is
+cursor cur_loc 
+is
+select tso_codigo cod
+from sif_centro_costos;
+
+cont number : =0;
+var1 sds_tipo_servicio_tso.tso_codigo%type;
+
+begin 
+
+     open cur_loc;  
+   
+    loop
+
+	fetch cur_loc into var1
+       
+      	insert into localidad
+      	values  (cont,var1.cod);
+
+     	cont=cont+1;
+  
+    	 exit when cur_loc%notfound;
+
+    end loop;
+close cur_loc;
+
+-------------------------------------------------------------------------------------------------------------
+create table "Solicitud" 
+(
+
+ "idSolicitud" number NOT NULL,
+ "detalle" VARCHAR(2) NOT NULL,
+  CONSTRAINT solicitud_pk PRIMARY KEY (idSolicitud)
+);
+
+create table "servicios"
+(
+
+ "idservicios" number NOT NULL ,
+ "nombre"  VARCHAR(2) NOT NULL ,
+
+ CONSTRAINT tiempo_pk PRIMARY KEY (idservicios)
+);
+
+
+create table "Cant_solicitudes" 
+(
+
+ "idEstado"  number NOT NULL ,
+ "idSolicitud"     number NOT NULL,
+ "idTiempo"  number NOT NULL,
+ "cantidad" number NOT NULL,
+ "descripcion" VARCHAR(20),
+
+  CONSTRAINT Cant_solicitudes_pk PRIMARY KEY (idEstado ,idSolicitudes,idTiempo),
+  
+  CONSTRAINT fk_Estado
+    FOREIGN KEY (idEstado)
+    REFERENCES Estado(idEstado),
+CONSTRAINT fk_Solicitud
+    FOREIGN KEY (idSolicitud)
+    REFERENCES localidad (idSolicitud),
+CONSTRAINT fk_tiempo
+    FOREIGN KEY (idtiempo)
+    REFERENCES tiempo(idtiempo)
+
+);
+
+
+create table "Tiempo_atencion" 
+(
+
+ "idCentro"  number NOT NULL ,
+ "idFecha"     number NOT NULL,
+ "idEdificio"  number NOT NULL,
+ "Tiempo" DATE NOT NULL,
+
+  CONSTRAINT Tiempo_atencion_pk PRIMARY KEY (idCentro ,idFecha,idEdificio),
+  
+  CONSTRAINT fk_centro
+    FOREIGN KEY (idCentro)
+    REFERENCES Centro_costos(idCentro),
+CONSTRAINT fk_edif
+    FOREIGN KEY (idEdificio)
+    REFERENCES Edificio (idEdificios),
+CONSTRAINT fk_tiempo
+    FOREIGN KEY (idtiempo)
+    REFERENCES tiempo(idtiempo)
+
+);
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+
