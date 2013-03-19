@@ -1,0 +1,108 @@
+create table "tiempo" 
+(
+
+ "idtiempo" number NOT NULL  ,
+ "fecha"  date NOT NULL,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idtiempo)
+);
+
+
+create table "Solicitud" 
+(
+
+ "idsolicitud number NOT NULL,
+ "nombre_solicitud" VARCHAR(2) NOT NULL,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idsolicitud)
+);
+
+
+create table "status"
+(
+
+ "idstatus" number NOT NULL ,
+ "nombreStatus"  VARCHAR(2) NOT NULL ,
+
+ CONSTRAINT tiempo_pk PRIMARY KEY (idstatus)
+);
+
+create table "servicios"
+(
+
+ "idservicio" number NOT NULL ,
+ "nombreServicio"  VARCHAR(2) NOT NULL ,
+
+ CONSTRAINT tiempo_pk PRIMARY KEY (idservicio)
+);
+
+create table "personal"
+(
+
+ "idpersonal" number NOT NULL ,
+ "nom_personal"  VARCHAR(2) NOT NULL ,
+
+ CONSTRAINT tiempo_pk PRIMARY KEY (idpersonal)
+);
+
+create table "Localidad"
+(
+
+ "idlocalidad" number NOT NULL ,
+ "nombre_localidad"  VARCHAR(2) NOT NULL ,
+
+ CONSTRAINT tiempo_pk PRIMARY KEY (idlocalidad)
+);
+
+create table "Edo_Solicitud"
+(
+
+"idsolicitud"  number NOT NULL ,
+ "idtiempo"     number NOT NULL,
+ "idstatus"  number NOT NULL,
+
+  tiempo_promedio number,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idsolicitud ,idtiempo,idstatus)
+  
+  CONSTRAINT fk_solicitud
+    FOREIGN KEY (idsolicitud)
+    REFERENCES servicios(idsolicitud),
+CONSTRAINT fk_status
+    FOREIGN KEY (idstatus)
+    REFERENCES localidad (idstatus),
+CONSTRAINT fk_tiempo
+    FOREIGN KEY (idtiempo)
+    REFERENCES tiempo(idtiempo)
+
+
+
+);
+
+create table "Desempeño_obras_atendidas"
+(
+
+
+"idservicios"  number NOT NULL ,
+ "idpersonal"     number NOT NULL,
+ "idlocalidad"  number NOT NULL,
+ "idtiempo"     number NOT NULL,
+
+  desempeño_historico number,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idservicios ,idpersonal,idlocalidad)
+  
+  CONSTRAINT fk_servicios
+    FOREIGN KEY (idservicios)
+    REFERENCES servicios(idservicios),
+CONSTRAINT fk_status
+    FOREIGN KEY (idpersonal)
+    REFERENCES localidad (idpersonal),
+CONSTRAINT fk_tiempo
+    FOREIGN KEY (idtiempo)
+    REFERENCES tiempo(idtiempo)
+
+CONSTRAINT fk_localidad
+    FOREIGN KEY (idlocalidad)
+    REFERENCES tiempo(idlocalidad)
+
+
+);
+
+
