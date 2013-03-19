@@ -1,0 +1,99 @@
+create table "Materiales" 
+(
+
+ "id_materiales number NOT NULL,
+ "nombre" VARCHAR(25) NOT NULL,
+ "tipo" VARCHAR(25) NOT NULL,
+ CONSTRAINT "materiales_pk" PRIMARY KEY ('id_materilaes')
+);
+
+create table "personal" 
+(
+
+ "id_personal" number NOT NULL,
+ "nacionalidad" VARCHAR(25) NOT NULL,
+  CONSTRAINT "personal_pk" PRIMARY KEY ('id_personal')
+);
+
+create table "tiempo" 
+(
+
+ "id_tiempo" number NOT NULL,
+ "fecha" DATE NOT NULL,
+ "dia" VARCHAR(25) NOT NULL,
+ "mes" VARCHAR(25) NOT NULL,
+CONSTRAINT "tiempo_pk" PRIMARY KEY ('id_tiempo')
+);
+
+create table "sobrepaso" 
+(
+
+ "id_materiales" number NOT NULL,
+ "id_personal" number NOT NULL,
+ "id_tiempo" number NOT NULL,
+ "cantidad de trabajos" INT NOT NULL,
+ CONSTRAINT "sobrepaso_pk" PRIMARY KEY ('id_materiales','id_parsonal','id_tiempo')
+);
+
+create or replace procedure carga_materiales()
+is
+
+
+cursor cur_materiales
+is
+select mtl.mtl_nombre nom,tml.tml_nombre tipo
+from materiales_mtl mtl,tipo_materiales_tml
+where mtl.tml_codigo=tml.tml_codigo;
+
+cont number : =0;
+var1 cur_materilaes%rowtype;
+
+begin 
+
+     open cur_materiales;  
+   
+    loop
+
+	fetch cur_materiales into var1
+       
+      	insert into materiales
+      	values  (cont,var1.nom,var1.tipo);
+
+     	cont=cont+1;
+  
+    	 exit when cur_materiales%notfound;
+
+    end loop;
+close cur_materiales;
+end begin;
+
+create or replace procedure carga_personas()
+is
+
+
+cursor cur_personas
+is
+select infa.nacionalidad
+from administrador_infa;
+
+cont number : =0;
+var1 cur_personas%rowtype;
+
+begin 
+
+     open cur_personas;  
+   
+    loop
+
+	fetch cur_personas into var1
+       
+      	insert into personas
+      	values  (cont,var1.infa.nacionalidad);
+
+     	cont=cont+1;
+  
+    	 exit when cur_personas%notfound;
+
+    end loop;
+close cur_personas;
+end begin;
