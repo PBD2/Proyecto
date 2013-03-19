@@ -1,0 +1,112 @@
+
+4.1  Carga inicial
+Creación de tablas:
+create table "tiempo" 
+(
+ "idtiempo" number NOT NULL  ,
+ "fecha"  date NOT NULL,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idtiempo)
+);
+
+create table "localidad" 
+(
+ "idlocalidad number NOT NULL,
+ "nombre" VARCHAR(2) NOT NULL,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idlocalidad)
+);
+create table "servicios"
+(
+ "idservicios" number NOT NULL ,
+ "nombre"  VARCHAR(2) NOT NULL ,
+ CONSTRAINT tiempo_pk PRIMARY KEY (idservicios)
+);
+create table "fallas" 
+(
+ "idlocalidad"  number NOT NULL ,
+ "idtiempo"     number NOT NULL,
+ "idservicios"  number NOT NULL,
+
+  tiempo_entre_fallas date,
+  CONSTRAINT tiempo_pk PRIMARY KEY (idlocalidad ,idtiempo,idservicios)
+  
+  CONSTRAINT fk_servicios
+    FOREIGN KEY (idservicios)
+    REFERENCES servicios(idservicios),
+CONSTRAINT fk_localidad
+    FOREIGN KEY (idlocalidad)
+    REFERENCES localidad (idlocalidad),
+CONSTRAINT fk_tiempo
+    FOREIGN KEY (idtiempo)
+    REFERENCES tiempo(idtiempo)
+
+);
+Cargas de las tablas:
+Carga de la dimension localidad:
+create or replace procedure carga_localidad()
+is
+cursor cur_loc
+is
+select lcd_nombre nom
+from localidades_lcd;
+
+cont number : =0;
+var1 localidades_lcd.lcd.nombre%type;
+
+begin
+open cur_loc;
+loop
+fetch cur_loc into var1
+insert into localidad
+values  (cont,var1.nom);
+cont=cont+1;
+exit when cur_loc%notfound;
+end loop;
+close cur_loc;
+endbegin;
+ 
+Carga de la dimension sevicios:
+
+create or replace procedure carga_servicio()
+is
+cursor cur_ser
+is
+select tso_nombre  nom
+from tipo_servicios_tso;
+cont number : =0;
+var1 tipo_servicios_tso%type;
+begin
+open cur_ser;
+loop
+fetch  cur_ser into var1
+
+insert into servicios
+values  (cont,var1.nom);
+cont=cont+1;
+
+exit when cur_ser%notfound;
+endloop;
+close cur_Ser;
+endbegin;
+
+
+Carga de la dimension tiempo
+create or replace procedure cargar_tiempo()
+is
+cursor cur_tiempo
+is
+select  his_fecha_ini fecha
+from  items_historicos_his;
+cont number : =0;
+
+begin
+open cur_tiempo;
+loop
+
+fetch cur_tiempo into var1
+insert into tiempo
+values (cont,var1.fecha);
+cont=cont+1;
+exit when cur_tiempo%notfound;
+end loop;
+close cur_tiempo;
+endbegin;
